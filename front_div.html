@@ -1,0 +1,619 @@
+<div class="wrap">
+  <div class="card">
+    <h1>SVOY SHOP</h1>
+    <div class="muted">Регистрация и вход в личный кабинет.</div>
+
+    <!-- Навигация (после логина). До логина скрыта -->
+    <div id="authNav" class="auth-nav" style="display:none">
+      <div class="auth-nav-left">
+        <button onclick="nav('cabinet')">Мой кабинет</button>
+        <button onclick="nav('catalog')">Каталог</button>
+        <button onclick="nav('history')">История</button>
+        <button onclick="nav('orders')">Мои заявки</button>
+        <button id="nav_admin" style="display:none" onclick="nav('admin')">Админ-панель</button>
+      </div>
+      <div class="auth-nav-right">
+        <button onclick="logout()">Выйти</button>
+      </div>
+    </div>
+
+    <!-- Landing (первый экран до входа) -->
+    <div id="view-landing">
+      <div class="landing-grid">
+        <div class="hero-wrap">
+          <img id="hero_img" alt="SVOY SHOP" style="display:none" />
+        </div>
+        <div class="landing-text">
+          <h2 style="margin-top:0; font-size:28px; font-weight:800; color:#111827; margin-bottom:16px;">
+            Добро пожаловать
+          </h2>
+
+          <div style="line-height:1.5; color:#374151; font-size:15px; margin-bottom:20px;">
+            <b>SVOY SHOP</b> — это бонусная программа для клиентов <b>SvoyDom</b>.
+            После покупки квартиры вы получаете баллы и можете обменять их
+            на подарки, технику, сертификаты и другие привилегии из каталога.
+          </div>
+
+          <div style="font-weight:700; font-size:16px; color:#111827; margin-bottom:6px;">
+            Как это работает
+          </div>
+          <ol style="margin:0 0 16px 20px; padding:0;">
+            <li style="margin-bottom:6px;">
+              Зарегистрируйтесь, указав свой номер телефона.
+            </li>
+            <li style="margin-bottom:6px;">
+              После проверки в личном кабинете показывается ваш баланс баллов.
+            </li>
+            <li style="margin-bottom:6px;">
+              Откройте каталог, выберите товар и оформите заявку.
+            </li>
+            <li style="margin-bottom:6px;">
+              Менеджер подтвердит выдачу, и вы сможете получить подарок.
+            </li>
+          </ol>
+
+          <div style="font-size:13px; color:#6b7280; margin-bottom:20px;">
+            По всем вопросам — обращайтесь к вашему менеджеру SvoyDom.
+          </div>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button onclick="show('login')">Войти</button>
+            <button onclick="show('register')">Регистрация</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Табы форм. До логина можем показывать только их -->
+    <div class="tabs" id="tabsBar" style="display:none">
+      <div class="tab" id="tab-register" aria-selected="true"  onclick="show('register')">Регистрация</div>
+      <div class="tab" id="tab-login"    aria-selected="false" onclick="show('login')">Вход</div>
+    </div>
+
+    <!-- Регистрация -->
+    <div id="view-register" style="display:none">
+      <div class="row">
+        <div class="col">
+          <label>Телефон</label>
+          <input id="reg_phone" placeholder="+7 7__ ___ __ __" />
+        </div>
+        <div class="col">
+          <label>ФИО</label>
+          <input id="reg_name" placeholder="Иван Иванов" />
+        </div>
+        <div class="col">
+          <label>Дата рождения (необязательно)</label>
+          <input id="reg_dob" type="text" inputmode="numeric" placeholder="ДД.ММ.ГГГГ" />
+        </div>
+        <div class="col">
+          <label>Пол (необязательно)</label>
+          <select id="reg_gender">
+            <option value="">—</option>
+            <option value="M">Мужской</option>
+            <option value="F">Женский</option>
+          </select>
+        </div>
+        <div class="col" style="position:relative">
+          <label>Пароль</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="reg_password"
+                   type="password"
+                   placeholder="Мин. 6 символов (латиница)"
+                   style="flex:1" />
+            <button type="button"
+                    id="btn_reg_pass"
+                    onclick="togglePasswordSimple('reg_password', this)"
+                    style="padding:8px 10px;border-radius:8px;border:none;background:var(--brand);color:#fff;cursor:pointer">
+              Показать
+            </button>
+          </div>
+          <div class="muted" style="font-size:12px;line-height:1.4;margin-top:4px;">
+            Только латинские буквы, цифры и символы. Без кириллицы.
+          </div>
+        </div>
+      </div>
+      <!-- Согласия -->
+        <div class="col" style="grid-column:1 / -1; margin-top:6px;">
+          <label class="muted" style="display:flex; align-items:flex-start; gap:10px;">
+            <input id="agree_rules" type="checkbox" style="margin-top:3px" />
+            <span>Я принимаю <a href="#" onclick="openModal('modal_rules'); return false;">Правила программы</a></span>
+          </label>
+          <label class="muted" style="display:flex; align-items:flex-start; gap:10px; margin-top:6px;">
+            <input id="agree_offer" type="checkbox" style="margin-top:3px" />
+            <span>Я принимаю <a href="#" onclick="openModal('modal_offer'); return false;">Публичную оферту</a></span>
+          </label>
+        </div>
+      <div class="mt">
+        <button id="btn_register" onclick="register()" disabled>Зарегистрироваться</button>
+        <span class="muted right">Уже есть аккаунт? <a href="#" onclick="show('login')">Войти</a></span>
+      </div>
+      <div id="reg_msg" class="mt"></div>
+    </div>
+
+    <!-- Вход -->
+    <div id="view-login" style="display:none">
+      <div class="row">
+        <div class="col">
+          <label>Телефон</label>
+          <input id="log_phone" placeholder="+7 7__ ___ __ __" />
+        </div>
+        <div class="col" style="position:relative">
+          <label>Пароль</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="log_password" type="password" style="flex:1" />
+            <button type="button"
+                    id="btn_log_pass"
+                    onclick="togglePasswordSimple('log_password', this)"
+                    style="padding:8px 10px;border-radius:8px;border:none;background:var(--brand);color:#fff;cursor:pointer">
+              Показать
+            </button>
+          </div>
+        </div>
+      </div>
+    
+      <!-- нижняя строка с кнопкой Войти и ссылками -->
+      <div class="mt" style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;row-gap:8px;">
+        <!-- левая колонка -->
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:200px;max-width:100%;">
+          <button id="btn_login" onclick="login()">Войти</button>
+    
+          <button type="button"
+                  onclick="openResetFlow()"
+                  style="background:transparent;border:none;padding:0;margin:0;color:#1d4ed8;font-weight:600;cursor:pointer;text-align:left;font-size:14px;">
+            Забыли пароль?
+          </button>
+        </div>
+    
+        <!-- правая колонка -->
+        <span class="muted" style="font-size:13px;line-height:1.4;">
+          Нет аккаунта?
+          <a href="#" onclick="show('register')">Регистрация</a>
+        </span>
+      </div>
+    
+      <div id="log_msg" class="mt"></div>
+    </div>
+    
+    <!-- Восстановление пароля -->
+    <div id="view-reset" style="display:none;max-width:520px">
+      <h3 style="margin-top:0">Восстановление пароля</h3>
+    
+      <!-- Шаг 1: запросить код -->
+      <div id="reset_step1">
+        <div class="col">
+          <label>Телефон</label>
+          <input id="reset_phone" placeholder="+7 7__ ___ __ __" />
+          <div class="muted" style="font-size:12px;line-height:1.4;margin-top:4px;">
+            Мы отправим одноразовый код в Telegram, который привязан к вашему аккаунту.
+          </div>
+        </div>
+    
+        <div class="mt" style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="btn_reset_req" onclick="resetRequestCode()">Получить код в Telegram</button>
+          <button type="button"
+                  onclick="show('login')"
+                  style="background:transparent;border:none;padding:12px 16px;border-radius:12px;font-weight:600;cursor:pointer;">
+            ← Назад ко входу
+          </button>
+        </div>
+    
+        <div id="reset_msg1" class="mt"></div>
+      </div>
+    
+      <!-- Шаг 2: ввести код и новый пароль -->
+      <div id="reset_step2" style="display:none; margin-top:24px;">
+        <div class="col">
+          <label>Код из Telegram</label>
+          <input id="reset_code" placeholder="RP-123456" />
+        </div>
+    
+        <div class="col" style="margin-top:12px;">
+          <label>Новый пароль</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="reset_newpass" type="password" style="flex:1" placeholder="Мин. 6 символов, только латиница" />
+            <button type="button"
+                    onclick="togglePasswordSimple('reset_newpass', this)"
+                    style="padding:8px 10px;border-radius:8px;border:none;background:var(--brand);color:#fff;cursor:pointer">
+              Показать
+            </button>
+          </div>
+          <div class="muted" style="font-size:12px;line-height:1.4;margin-top:4px;">
+            Пароль должен быть не короче 6 символов и содержать только латинские буквы, цифры и знаки.
+          </div>
+        </div>
+    
+        <div class="mt" style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="btn_reset_confirm" onclick="resetConfirm()">Сменить пароль</button>
+          <button type="button"
+                  onclick="openResetFlow(/*stayOnStep1*/true)"
+                  style="background:transparent;border:none;padding:12px 16px;border-radius:12px;font-weight:600;cursor:pointer;">
+            ← Запросить код заново
+          </button>
+        </div>
+    
+        <div id="reset_msg2" class="mt"></div>
+      </div>
+    </div>
+
+    <!-- Мой кабинет -->
+    <div id="view-cabinet" style="display:none">
+      <div class="toolbar">
+        <div>
+          <div id="cab_name" style="font-weight:800"></div>
+          <div id="cab_phone" class="muted"></div>
+        </div>
+      </div>
+
+      <div class="card mt" style="padding:14px">
+        <div style="font-weight:700;margin-bottom:8px">Баланс</div>
+        <div class="list">
+          <div class="metric"><span>Доступный баланс</span><b id="m_available">—</b></div>
+          <div class="metric"><span>Неподтверждённый</span><b id="m_pending">—</b></div>
+          <div class="metric"><span>Заработано за всё время</span><b id="m_earned">—</b></div>
+          <div class="metric"><span>Потрачено за всё время</span><b id="m_spent">—</b></div>
+          <div class="metric"><span>Удержано сейчас</span><b id="m_hold">—</b></div>
+        </div>
+      </div>
+      <!-- ???? БЛОК ПРО ТЕЛЕГРАМ -->
+        <div id="tg_verify_block"
+             class="card mt"
+             style="display:none; text-align:center; padding:16px; border:2px dashed #0a7c59;">
+          <div style="font-weight:600; color:#111827; margin-bottom:6px;">
+            Подтвердите аккаунт через Telegram
+          </div>
+          <div class="muted" style="font-size:13px; line-height:1.4; margin-bottom:12px;">
+            Это нужно один раз. Без подтверждения нельзя оформлять покупки в каталоге.<br/>
+            Бот: <a href="https://t.me/svoy_shop_bot" target="_blank" style="color:#1d4ed8; font-weight:600; text-decoration:none;">@svoy_shop_bot</a>
+          </div>
+        
+          <button type="button"
+                  onclick="startTelegramVerify()"
+                  style="padding:12px 16px;border-radius:12px;border:none;background:var(--brand);color:#fff;font-weight:700;cursor:pointer;">
+            Подтвердить через Telegram
+          </button>
+        
+          <div id="tg_verify_msg"
+               class="muted"
+               style="margin-top:12px; font-size:13px; line-height:1.4;">
+          </div>
+        </div>
+        <!-- ???? КОНЕЦ БЛОКА ПРО ТЕЛЕГРАМ -->
+      <div id="cab_msg" class="mt"></div>
+    </div>
+
+    <!-- Каталог -->
+    <div id="view-catalog" style="display:none">
+      <h3>Каталог</h3>
+      <div class="mt filters-bar">
+        <label class="muted" style="display:flex;align-items:center;gap:8px">
+          <input type="checkbox" id="only_available_toggle" />
+          Показывать только доступные
+        </label>
+
+        <div class="catalog-balance">
+          <span class="badge-balance">
+            <span class="dot"></span>
+            <span class="label">Баланс</span>
+            <span id="catalog_balance_num" class="num">—</span>
+          </span>
+        </div>
+
+        <span class="flex-break"></span>
+
+        <div class="row2">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="muted">Категория:</span>
+            <select id="cat_filter" style="min-width:200px">
+              <option value="">Все категории</option>
+            </select>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="muted">Сортировка:</span>
+            <select id="sort_dir">
+              <option value="asc">Цена ↑</option>
+              <option value="desc">Цена ↓</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="mt">Доступно сейчас</h3>
+      <div id="catalog_available" class="grid"></div>
+      <div id="catalog_available_empty" class="muted">Нет доступных товаров.</div>
+
+      <h3 class="mt">Недоступно (не хватает баллов)</h3>
+      <div id="catalog_unavailable" class="grid"></div>
+      <div id="catalog_unavailable_empty" class="muted">Все товары доступны — круто!</div>
+
+      <div id="cat_msg" class="mt"></div>
+    </div>
+
+    <!-- Мои заявки -->
+    <div id="view-orders" style="display:none">
+      <h3>Мои заявки</h3>
+      <div id="orders" class="grid"></div>
+      <div id="orders_empty" class="muted">Заявок пока нет.</div>
+    </div>
+
+    <!-- История -->
+    <div id="view-history" style="display:none">
+      <h3>История</h3>
+      <div class="muted" style="margin-bottom:8px">
+        <span style="color:#059669">●</span> подтверждённое пополнение
+        &nbsp;
+        <span style="color:#2563eb">●</span> ожидающее пополнение
+        &nbsp;
+        <span style="color:#ef4444">●</span> списание
+        &nbsp;
+        <span style="color:#6b7280">●</span> расторжение / отменено
+      </div>
+      <div id="history_list" class="grid" style="grid-template-columns:1fr;gap:8px"></div>
+      <div id="history_empty" class="muted">Истории пока нет.</div>
+    </div>
+
+    <!-- Админ -->
+    <div id="view-admin" style="display:none">
+      <div class="toolbar">
+        <h3 style="margin:0">Панель администратора</h3>
+        <button onclick="nav('cabinet')">← В кабинет</button>
+      </div>
+
+      <div class="adm-tabs" style="margin:12px 0 16px">
+        <div id="adm_tab_btn_orders"  class="adm-tab" aria-selected="true"  onclick="adminShow('orders')">Админ-заявки</div>
+        <div id="adm_tab_btn_catalog" class="adm-tab" aria-selected="false" onclick="adminShow('catalog')">Админ-каталог</div>
+        <div id="adm_tab_btn_deals"   class="adm-tab" aria-selected="false" onclick="adminShow('deals')">Админ-сделки</div>
+      </div>
+
+      <!-- Секция: Заявки -->
+      <div id="adm_tab_orders" class="adm-section" style="display:block">
+        <div class="flex" style="margin:12px 0; align-items:flex-end; gap:12px; flex-wrap:wrap">
+          <div>
+            <div class="muted" style="font-size:12px">Статус</div>
+            <select id="adm_status_filter_ru">
+              <option value="">Все заявки</option>
+              <option value="waiting">В ожидании</option>
+              <option value="approved">Подтверждено</option>
+              <option value="ready">Готов к выдаче</option>
+              <option value="await_code">Ожидает код</option>
+              <option value="delivered">Выдано</option>
+              <option value="canceled">Отменено</option>
+              <option value="rejected">Отклонено</option>
+              <option value="failed">Ошибка</option>
+            </select>
+          </div>
+        
+          <div>
+            <div class="muted" style="font-size:12px">Телефон (частично)</div>
+            <input id="adm_phone_search" placeholder="например: 8203 или 7778…" 
+                   style="padding:8px 10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;min-width:220px" />
+          </div>
+        
+          <div>
+            <div class="muted" style="font-size:12px">Дата с</div>
+            <input id="adm_date_from" type="date"
+                   style="padding:8px 10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px" />
+          </div>
+        
+          <div>
+            <div class="muted" style="font-size:12px">по</div>
+            <input id="adm_date_to" type="date"
+                   style="padding:8px 10px;border:1px solid #d1d5db;border-radius:10px;font-size:14px" />
+          </div>
+        
+          <div>
+            <button id="btn_adm_orders_reload" type="button" onclick="adminRedemptionsReload()">Обновить</button>
+          </div>
+        </div>
+
+        <h3>Заявки</h3>
+        <div id="adm_orders" class="grid"></div>
+        <div id="adm_orders_empty" class="muted">Заявок нет.</div>
+      </div>
+
+      <!-- Секция: Каталог -->
+      <div id="adm_tab_catalog" class="adm-section">
+        <h3>Каталог</h3>
+
+        <!-- Добавить товар -->
+        <div class="card" style="margin:8px 0; padding:16px">
+          <h3 style="margin-top:0">Добавить товар</h3>
+          <div class="row" style="margin-top:8px">
+            <div class="col">
+              <label>Название *</label>
+              <input id="new_title" placeholder="Напр.: Подарочный сертификат 10 000" />
+            </div>
+            <div class="col">
+              <label>Категория</label>
+              <select id="new_category_select" style="min-width:220px">
+                <option value="">— выбрать —</option>
+                <option value="__add__">+ Добавить категорию…</option>
+              </select>
+              <input id="new_category_custom" placeholder="Новая категория" style="margin-top:6px; display:none" />
+            </div>
+            <div class="col">
+              <label>Цена (тенге) *</label>
+              <input id="new_price_tenge" type="number" min="1" step="1" placeholder="Напр.: 10000" />
+              <div id="price_preview" class="muted" style="font-size:13px;margin-top:4px;"></div>
+            </div>
+            <div class="col">
+              <label>Остаток</label>
+              <input id="new_stock" type="number" min="0" step="1" placeholder="Напр.: 5" />
+            </div>
+            <div class="col" style="grid-column:1 / -1">
+              <label>Описание</label>
+              <input id="new_desc" placeholder="Короткое описание товара" />
+            </div>
+            <div class="col">
+              <label>Картинка</label>
+              <input id="new_image" type="file" accept="image/*" />
+              <div class="muted" style="font-size:12px;margin-top:4px">PNG/JPG до ~5 МБ</div>
+            </div>
+            <div class="col">
+              <label>Превью</label>
+              <div class="hero-wrap" style="height:120px;background:#f5f7fb">
+                <img id="new_image_preview" style="display:none;width:100%;height:100%;object-fit:contain" />
+              </div>
+            </div>
+            <div class="col" style="display:flex;align-items:flex-end;gap:10px">
+              <label class="muted" style="display:flex;align-items:center;gap:8px;margin:0">
+                <input id="new_active" type="checkbox" checked /> Активен
+              </label>
+            </div>
+          </div>
+          <div class="mt" id="adm_add_msg"></div>
+          <div class="mt">
+            <button id="btn_add_item" onclick="adminAddItem()">Добавить товар</button>
+          </div>
+        </div>
+
+        <!-- фильтры каталога -->
+        <div id="adm_catalog_filters" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 12px">
+          <select id="adm_cat_filter" style="min-width:200px;padding:8px 10px;border-radius:10px;border:1px solid #d1d5db;font-size:14px">
+            <option value="">Все категории</option>
+          </select>
+          <input id="adm_search_filter" type="text" placeholder="Поиск по названию/описанию..."
+                style="padding:8px 10px;border-radius:10px;border:1px solid #d1d5db;font-size:14px;width:260px">
+          <button id="btn_adm_refresh" type="button" onclick="adminLoadCatalog()">Обновить список</button>
+        </div>
+
+        <div id="adm_catalog" class="grid"></div>
+      </div>
+
+      <!-- Секция: Сделки -->
+      <div id="adm_tab_deals" class="adm-section">
+        <h3>Сделки</h3>
+
+        <div class="tabs" style="margin:10px 0 14px">
+          <div class="tab" id="deal_tab_add" aria-selected="true"  onclick="adminDealsShow('add')">Добавление сделки</div>
+          <div class="tab" id="deal_tab_list" aria-selected="false" onclick="adminDealsShow('list')">Сделки</div>
+        </div>
+
+        <!-- Добавить сделку -->
+        <div id="adm_deal_add">
+          <div class="row" style="margin-top:8px">
+            <div class="col">
+              <label>Номер договора *</label>
+              <input id="deal_contract" placeholder="Напр.: AM-2025-00123" />
+            </div>
+            <div class="col">
+              <label>Телефон *</label>
+              <input id="deal_phone" placeholder="+7 7__ ___ __ __" />
+            </div>
+            <div class="col">
+              <label>Вид помещения *</label>
+              <select id="deal_type">
+                <option value="">— выбрать —</option>
+                <option value="КВ">КВ</option>
+                <option value="ВП">ВП</option>
+                <option value="ПМ">ПМ</option>
+                <option value="КП">КП</option>
+              </select>
+            </div>
+            <div class="col">
+              <label>Цена *</label>
+              <input id="deal_price" type="number" min="1" step="1" placeholder="Напр.: 45000000" />
+            </div>
+            <div class="col">
+              <label>Статус *</label>
+              <select id="deal_status">
+                <option value="credited_pending">credited_pending</option>
+                <option value="credited_available">credited_available</option>
+                <option value="termination">termination</option>
+              </select>
+            </div>
+            <div class="col">
+              <label>Баллы (автоматически)</label>
+              <input id="deal_points" disabled />
+            </div>
+          </div>
+          <div class="mt" id="adm_deal_msg"></div>
+          <div class="mt">
+            <button id="btn_add_deal" onclick="adminAddDeal()">Добавить сделку</button>
+          </div>
+        </div>
+
+        <!-- Список сделок -->
+        <div id="adm_deal_list" style="display:none">
+          <div class="row" style="align-items:flex-end; margin-top:8px">
+            <div class="col">
+              <label>Поиск</label>
+              <input id="deal_search" placeholder="Договор или телефон" />
+            </div>
+            <div class="col">
+              <label>Сортировка по дате</label>
+              <select id="deal_sort">
+                <option value="desc">Новые сверху</option>
+                <option value="asc">Старые сверху</option>
+              </select>
+            </div>
+            <div class="col">
+              <button id="btn_deal_reload" onclick="adminLoadDeals()">Обновить</button>
+            </div>
+          </div>
+
+          <div id="deal_list_msg" class="mt"></div>
+
+          <div class="grid" style="grid-template-columns:1fr;gap:8px" id="deal_list_wrap"></div>
+          <div class="muted" id="deal_list_empty" style="display:none">Сделок нет.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Лайтбокс -->
+<div id="img_modal" onclick="closeImg()">
+  <button class="close" onclick="event.stopPropagation(); closeImg();">Закрыть</button>
+  <img id="img_modal_pic" alt="Просмотр изображения">
+</div>
+
+<!-- Модалка: Правила -->
+<div id="modal_rules" class="modal" onclick="closeModalOutside(event,'modal_rules')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <h3>Правила программы лояльности</h3>
+      <button onclick="closeModal('modal_rules')" style="background:#f3f4f6;border:none;border-radius:8px;padding:6px 10px;cursor:pointer">Закрыть</button>
+    </div>
+    <iframe class="modal-frame" src="/rules" title="Правила программы"></iframe>
+    <div class="modal-foot">
+      <button onclick="closeModal('modal_rules')">Понятно</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: Публичная оферта -->
+<div id="modal_offer" class="modal" onclick="closeModalOutside(event,'modal_offer')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <h3>Публичная оферта</h3>
+      <button onclick="closeModal('modal_offer')" style="background:#f3f4f6;border:none;border-radius:8px;padding:6px 10px;cursor:pointer">Закрыть</button>
+    </div>
+    <iframe class="modal-frame" src="/offer" title="Публичная оферта"></iframe>
+    <div class="modal-foot">
+      <button onclick="closeModal('modal_offer')">Понятно</button>
+    </div>
+  </div>
+</div>
+
+<!-- Глобальные оверлеи -->
+<div id="ui_lock" style="
+  position:fixed; inset:0;
+  background:rgba(255,255,255,0);
+  z-index:10000; display:none; cursor:wait;"></div>
+<div id="loadingOverlay" style="
+  display:none;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background:rgba(255,255,255,0.6);
+  z-index:9999;
+  pointer-events:all;
+  cursor: wait;
+  backdrop-filter: blur(2px);
+  font-size: 18px;
+  color: var(--muted);
+  font-weight: 500;
+  text-align: center;
+  padding-top: 20%;
+">
+  ⏳ Загрузка данных...
+</div>
